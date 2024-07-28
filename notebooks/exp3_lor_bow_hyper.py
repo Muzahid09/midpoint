@@ -104,11 +104,11 @@ param_grid = {
 with mlflow.start_run():
 
     # Perform grid search
-    grid_search = GridSearchCV(LogisticRegression(), param_grid, cv=5, scoring='f1', n_jobs=-1)
+    grid_search = GridSearchCV(LogisticRegression(), param_grid, cv=5, scoring=['f1','accuracy'], refit='accuracy', n_jobs=-1)
     grid_search.fit(X_train, y_train)
 
     # Log each parameter combination as a child run
-    for params, mean_score, std_score in zip(grid_search.cv_results_['params'], grid_search.cv_results_['mean_test_score'], grid_search.cv_results_['std_test_score']):
+    for params, mean_score, std_score in zip(grid_search.cv_results_['params'], grid_search.cv_results_['mean_test_accuracy'], grid_search.cv_results_['std_test_accuracy']):
         with mlflow.start_run(run_name=f"LR with params: {params}", nested=True):
             model = LogisticRegression(**params)
             model.fit(X_train, y_train)
@@ -139,12 +139,15 @@ with mlflow.start_run():
 
     # Log the best run details in the parent run
     best_params = grid_search.best_params_
-    best_score = grid_search.best_score_
+    best_acc = grid_search.best_score_
+    best_f1 =  grid_search.cv_results_['mean_test_f1'].max()
     mlflow.log_params(best_params)
-    mlflow.log_metric("best_f1_score", best_score)
+    mlflow.log_metric("best_accuracy", best_acc)
+    mlflow.log_metric("best_f1_score", best_f1)
     
     print(f"Best Params: {best_params}")
-    print(f"Best F1 Score: {best_score}")
+    print(f"Best accuracy Score: {best_acc}")
+    print(f"Best F1 Score: {best_f1}")
 
     # Save and log the notebook
     mlflow.log_artifact(__file__)
