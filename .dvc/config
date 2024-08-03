@@ -1,4 +1,4 @@
 [core]
-    remote = dvcstore
-['remote "dvcstore"']
-    url = s3://mlflowmini
+    remote = dvcstoress
+['remote "dvcstoress"']
+    url = s3://muzahidvcaws
