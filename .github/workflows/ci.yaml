@@ -18,7 +18,7 @@ jobs:
 
       - name: install dependencies
         env:
-          DAGSHUB_PAT: ${{ secrets.DAGSHUB_TOKKEN }
+          DAGSHUB_PAT: ${{ secrets.DAGSHUB_TOKKEN }}
         run: |
           pip install -r requirements.txt
 
